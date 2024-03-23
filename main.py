@@ -81,7 +81,6 @@ plt.show()
 
 
 #Wykres 2: MASD+SIGNAL
-
 plt.figure(figsize=(12, 6),facecolor='lightgrey')
 plt.plot(data['Data'], macd, label='MACD Line', color='blue')
 plt.plot(data['Data'], signal, label='Signal Line', color='red')
@@ -97,19 +96,6 @@ available_shares=1000
 available_funds=0
 transaction_value=0
 transaction=[]
-#for i in range(len(macd)-1):
-#    if macd[i] > signal[i] and macd[i+1] < signal[i+1]:
-#        pointsSell.append(i)
-#        available_shares,available_funds,transaction_value=sell_shares(available_shares,available_funds,data['Zamkniecie'][i])
-#        transaction.append([data['Data'][i], "Sell",data['Zamkniecie'][i], transaction_value,available_funds,available_shares])
-#
-#    elif macd[i] < signal[i] and macd[i+1] > signal[i+1]:
-#        available_shares, available_funds,transaction_value = buy_shares(available_shares, available_funds, data['Zamkniecie'][i])
-#        transaction.append([data['Data'][i], "Buy",data['Zamkniecie'][i], transaction_value,available_funds,available_shares])
-#        pointsBuy.append(i)
-#
-#available_shares,available_funds,transaction_value=sell_shares(available_shares,available_funds,data['Zamkniecie'][len(data)-1])
-#transaction.append([data['Data'][len(data)-1], "Sell",data['Zamkniecie'][len(data)-1], transaction_value,available_funds,available_shares])
 available_shares,available_funds,transaction_value=macd_analysis(pointS=pointsSell,pointB=pointsBuy,
                                                                  a_shares=available_shares,a_funds=available_funds,
                                                                  t_value=transaction_value,data=data,
