@@ -53,6 +53,20 @@ def sell_shares(shares,funds,share_price):
     return shares, funds, temp_funds
 
 
+def macd_analysis(pointS, pointB,a_shares,a_funds,t_value,data, transactions):
+    for i in range(len(macd) - 1):
+        if macd[i] > signal[i] and macd[i + 1] < signal[i + 1]:
+            pointS.append(i)
+            a_shares, a_funds, t_value = sell_shares(a_shares, a_funds,data['Zamkniecie'][i])
+            transactions.append([data['Data'][i], "Sell", data['Zamkniecie'][i], t_value, a_funds, a_shares])
+
+        elif macd[i] < signal[i] and macd[i + 1] > signal[i + 1]:
+            a_shares, a_funds, t_value = buy_shares(a_shares, a_funds,data['Zamkniecie'][i])
+            transactions.append([data['Data'][i], "Buy", data['Zamkniecie'][i], t_value, a_funds, a_shares])
+            pointB.append(i)
+    a_shares, a_funds, t_value = sell_shares(a_shares, a_funds,data['Zamkniecie'][len(data) - 1])
+    transactions.append([data['Data'][len(data) - 1], "Sell", data['Zamkniecie'][len(data) - 1], t_value, a_funds,a_shares])
+    return a_shares, a_funds, t_value
 
 # Wykres 1: Notowania analizowanego instrumentu finansowego
 plt.figure(figsize=(12, 6))
@@ -83,19 +97,23 @@ available_shares=1000
 available_funds=0
 transaction_value=0
 transaction=[]
-for i in range(len(macd)-1):
-    if macd[i] > signal[i] and macd[i+1] < signal[i+1]:
-        pointsSell.append(i)
-        available_shares,available_funds,transaction_value=sell_shares(available_shares,available_funds,data['Zamkniecie'][i])
-        transaction.append([data['Data'][i], "Sell",data['Zamkniecie'][i], transaction_value,available_funds,available_shares])
-
-    elif macd[i] < signal[i] and macd[i+1] > signal[i+1]:
-        available_shares, available_funds,transaction_value = buy_shares(available_shares, available_funds, data['Zamkniecie'][i])
-        transaction.append([data['Data'][i], "Buy",data['Zamkniecie'][i], transaction_value,available_funds,available_shares])
-        pointsBuy.append(i)
-
-available_shares,available_funds,transaction_value=sell_shares(available_shares,available_funds,data['Zamkniecie'][len(data)-1])
-transaction.append([data['Data'][len(data)-1], "Sell",data['Zamkniecie'][len(data)-1], transaction_value,available_funds,available_shares])
+#for i in range(len(macd)-1):
+#    if macd[i] > signal[i] and macd[i+1] < signal[i+1]:
+#        pointsSell.append(i)
+#        available_shares,available_funds,transaction_value=sell_shares(available_shares,available_funds,data['Zamkniecie'][i])
+#        transaction.append([data['Data'][i], "Sell",data['Zamkniecie'][i], transaction_value,available_funds,available_shares])
+#
+#    elif macd[i] < signal[i] and macd[i+1] > signal[i+1]:
+#        available_shares, available_funds,transaction_value = buy_shares(available_shares, available_funds, data['Zamkniecie'][i])
+#        transaction.append([data['Data'][i], "Buy",data['Zamkniecie'][i], transaction_value,available_funds,available_shares])
+#        pointsBuy.append(i)
+#
+#available_shares,available_funds,transaction_value=sell_shares(available_shares,available_funds,data['Zamkniecie'][len(data)-1])
+#transaction.append([data['Data'][len(data)-1], "Sell",data['Zamkniecie'][len(data)-1], transaction_value,available_funds,available_shares])
+available_shares,available_funds,transaction_value=macd_analysis(pointS=pointsSell,pointB=pointsBuy,
+                                                                 a_shares=available_shares,a_funds=available_funds,
+                                                                 t_value=transaction_value,data=data,
+                                                                 transactions=transaction)
 print("Dostepne akcje: "+str(available_shares))
 print("Dostepne sriodki: "+str(available_funds))
 print(transaction)
